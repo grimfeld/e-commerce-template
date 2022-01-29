@@ -4,7 +4,7 @@ import NavBar from '@components/NavBar'
 
 function MyApp ({ Component, pageProps }: AppProps) {
   return (
-    <main className='flex flex-col p-4'>
+    <main className='flex flex-col items-start p-4'>
       <NavBar />
       <Component {...pageProps} />
     </main>

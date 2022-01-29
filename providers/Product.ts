@@ -33,4 +33,27 @@ const getProduct = (id: string): Product => { // Return a single product by id i
   return product
 }
 
-export { getProducts, getProduct }
+// Adds a product to the products array and checks if the product is valid
+const addProduct = (product: Product): Product => {
+  if (typeof product !== 'object') throw new Error('Product must be an object')
+  if (typeof product.id !== 'string') throw new Error('Product id must be a string')
+  if (product.id === '') throw new Error('Product id must not be empty')
+  if (typeof product.title !== 'string') throw new Error('Product title must be a string')
+  if (product.title === '') throw new Error('Product title must not be empty')
+  if (typeof product.description !== 'string') throw new Error('Product description must be a string')
+  if (product.description === '') throw new Error('Product description must not be empty')
+  if (typeof product.thumbnail !== 'string') throw new Error('Product thumbnail must be a string')
+  if (product.thumbnail === '') throw new Error('Product thumbnail must not be empty')
+  if (!Array.isArray(product.medias)) throw new Error('Product medias must be an array')
+  if (product.medias.length === 0) throw new Error('Product medias must not be empty')
+  if (!Array.isArray(product.feedbacks)) throw new Error('Product feedbacks must be an array')
+  if (product.feedbacks.length === 0) throw new Error('Product feedbacks must not be empty')
+  if (typeof product.price !== 'number') throw new Error('Product price must be a number')
+  if (product.price < 0) throw new Error('Product price must not be negative')
+  products.push(product)
+  return product
+}
+
+
+
+export { getProducts, getProduct, addProduct }
