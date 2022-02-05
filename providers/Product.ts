@@ -5,7 +5,7 @@ let products: Product[] = [
     id: '1',
     title: 'Product 1',
     description: 'Description of product 1',
-    thumbnail: 'https://picsum.photos/400',
+    thumbnail: 'https://images.unsplash.com/photo-1620780327051-f7ad06f5b1e0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80',
     medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
     feedbacks: ['Test feedback'],
     price: 49.99
