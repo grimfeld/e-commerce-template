@@ -19,9 +19,10 @@
       "types/*": ["types/*"],
       "@providers/*": ["providers/*"],
       "@components/*": ["components/*"],
-      "@root/*": ["*"]
+      "@root/*": ["*"],
+      "@utils/*": ["utils/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "EventBus.js"],
   "exclude": ["node_modules"]
 }
