@@ -38,6 +38,7 @@ const removeFromCart = (product_id: string): CartItem[] => { // Remove a product
   const cartItem = Cart.find(c => c.product_id === product_id)
   if (cartItem === undefined) throw new Error('Product not found')
   Cart = Cart.filter(c => c.product_id !== product_id)
+  console.log(Cart)
   return Cart
 }
 
@@ -49,6 +50,7 @@ const updateCart = (product_id: string, quantity: number): CartItem[] => { // Up
   const cartItem = Cart.find(c => c.product_id === product_id)
   if (cartItem === undefined) throw new Error('Product not found')
   cartItem.quantity = quantity
+  console.log(Cart)
   return Cart
 }
 
