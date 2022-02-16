@@ -1,11 +1,11 @@
-import { getProducts } from '@providers/Product'
 import type { GetServerSideProps, NextPage } from 'next'
 import { Product } from 'types/Product'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const products = getProducts()
+  const productsRef = await fetch(process.env.BASE_URL + '/api/products')
+  const products = await productsRef.json()
   return {
     props: {
       products
