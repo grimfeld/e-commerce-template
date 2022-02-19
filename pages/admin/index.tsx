@@ -13,11 +13,12 @@ import {
   Th,
   Td,
   TableCaption,
+  Button
 } from '@chakra-ui/react'
 
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const productsRef = await fetch(process.env.BASE_URL + '/api/products')
+  const productsRef = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/products')
   const products = await productsRef.json()
   return {
     props: {
@@ -69,7 +70,7 @@ export default function Admin ({ products }: { products: Product[] }) {
       ) : (
         <p>There are no products yet</p>
       )}
-
+      <Button onClick={() => router.push('/admin/products/add')}>Add product</Button>
     </div>
   )
 }

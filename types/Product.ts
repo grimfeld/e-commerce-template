@@ -3,7 +3,7 @@ export interface Product {
   title: string
   description: string
   thumbnail: string
-  medias: string[]
-  feedbacks: string[]
+  medias?: string[]
+  feedbacks?: string[]
   price: number
 }
