@@ -6,4 +6,5 @@ export interface User {
   createdAt: Date
   updatedAt: Date
   admin: boolean
+  token?: string
 }

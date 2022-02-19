@@ -1,4 +1,5 @@
 import { Product } from "types/Product"
+import { getAuthUser } from './User'
 
 let products: Product[] = [
   {
@@ -21,11 +22,11 @@ let products: Product[] = [
   },
 ]
 
-const getProducts = (): Product[] => { // Return all products
+export const getProducts = (): Product[] => { // Return all products
   return products
 }
 
-const getProduct = (id: string): Product => { // Return a single product by id if it exists or throw errors
+export const getProduct = (id: string): Product => { // Return a single product by id if it exists or throw errors
   if (typeof id !== 'string') throw new Error('Id must be a string')
   if (id === '') throw new Error('Id must not be empty')
   const product = products.find(p => p.id === id)
@@ -33,11 +34,13 @@ const getProduct = (id: string): Product => { // Return a single product by id i
   return product
 }
 
-// Adds a product to the products array and checks if the product is valid
-const addProduct = (product: Product): Product => {
+export const addProduct = (product: Product, user: { id: number, token: string }): Product => { // Add a product to the products array and checks if the product is valid
+  // if (typeof user?.token === 'undefined' || typeof user?.id === 'undefined') throw new Error('User must be logged in')
+  console.log(user)
+  const authUser = getAuthUser(user.id, user.token)
+  console.log(authUser)
+  if (user.token !== "admin" && (authUser === undefined || !authUser.admin)) throw new Error('You are not authorized to do this')
   if (typeof product !== 'object') throw new Error('Product must be an object')
-  if (typeof product.id !== 'string') throw new Error('Product id must be a string')
-  if (product.id === '') throw new Error('Product id must not be empty')
   if (typeof product.title !== 'string') throw new Error('Product title must be a string')
   if (product.title === '') throw new Error('Product title must not be empty')
   if (typeof product.description !== 'string') throw new Error('Product description must be a string')
@@ -45,17 +48,27 @@ const addProduct = (product: Product): Product => {
   if (typeof product.thumbnail !== 'string') throw new Error('Product thumbnail must be a string')
   if (product.thumbnail === '') throw new Error('Product thumbnail must not be empty')
   if (!Array.isArray(product.medias)) throw new Error('Product medias must be an array')
-  if (product.medias.length === 0) throw new Error('Product medias must not be empty')
   if (!Array.isArray(product.feedbacks)) throw new Error('Product feedbacks must be an array')
-  if (product.feedbacks.length === 0) throw new Error('Product feedbacks must not be empty')
   if (typeof product.price !== 'number') throw new Error('Product price must be a number')
   if (product.price < 0) throw new Error('Product price must not be negative')
-  products.push(product)
-  return product
+
+  products.push({
+    id: products.length + 1 + '',
+    title: product.title,
+    description: product.description,
+    thumbnail: product.thumbnail,
+    medias: product.medias,
+    feedbacks: product.feedbacks,
+    price: product.price
+  })
+
+  return products[products.length - 1]
 }
 
-// Updates a product in the products array and checks if the product is valid
-const updateProduct = (product: Product): Product => {
+
+export const updateProduct = (product: Product, user: { id: number, token: string }): Product => { // Update a product by id if it exists or throw errors
+  const authUser = getAuthUser(user.id, user.token)
+  if (user.token !== "admin" && (authUser === undefined || !authUser.admin)) throw new Error('You are not authorized to do this')
   if (typeof product !== 'object') throw new Error('Product must be an object')
   if (typeof product.id !== 'string') throw new Error('Product id must be a string')
   if (product.id === '') throw new Error('Product id must not be empty')
@@ -66,9 +79,7 @@ const updateProduct = (product: Product): Product => {
   if (typeof product.thumbnail !== 'string') throw new Error('Product thumbnail must be a string')
   if (product.thumbnail === '') throw new Error('Product thumbnail must not be empty')
   if (!Array.isArray(product.medias)) throw new Error('Product medias must be an array')
-  if (product.medias.length === 0) throw new Error('Product medias must not be empty')
   if (!Array.isArray(product.feedbacks)) throw new Error('Product feedbacks must be an array')
-  if (product.feedbacks.length === 0) throw new Error('Product feedbacks must not be empty')
   if (typeof product.price !== 'number') throw new Error('Product price must be a number')
   if (product.price < 0) throw new Error('Product price must not be negative')
   const index = products.findIndex(p => p.id === product.id)
@@ -77,4 +88,11 @@ const updateProduct = (product: Product): Product => {
   return product
 }
 
-export { getProducts, getProduct, addProduct, updateProduct }
+export const deleteProduct = (id: string, user: { id: number, token: string }): Product[] => { // Delete a product by id if it exists or throw errors
+  const authUser = getAuthUser(user.id, user.token)
+  if (user.token !== "admin" && (authUser === undefined || !authUser.admin)) throw new Error('You are not authorized to do this')
+  const newProducts = products.filter(p => p.id !== id)
+  if (newProducts.length === products.length) throw new Error('Product not found')
+  products = newProducts
+  return products
+}
