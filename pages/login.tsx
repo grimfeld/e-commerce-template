@@ -19,7 +19,7 @@ export default function LoginPage () {
 
   const router = useRouter()
 
-  const handleLogin = (values: Credentials, { setSubmitting }: FormikHelpers<Credentials>) => {
+  const handleLogin = (values: Credentials, { setSubmitting }: FormikHelpers<Credentials>): void => {
     console.log('log in')
     console.log(values)
     const loggedInUser = logIn(values.username, values.password)
