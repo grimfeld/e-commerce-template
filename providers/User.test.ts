@@ -78,14 +78,13 @@ describe("Registering suite", () => {
     const user = register('existingUser', "existing@mail.com", "existingPassword")
     id = user.id
   })
-  it("Fails if username is missing", () => {
-    expect(() => register("", "test@mail.com", "test")).toThrowError("Username is required")
-  })
-  it("Fails if email is missing", () => {
-    expect(() => register("test", "", "test")).toThrowError("Email is required")
-  })
-  it("Fails if password is missing", () => {
-    expect(() => register("test", "test@mail.com", "")).toThrowError("Password is required")
+
+  it.each([
+    { name: "Username", body: { username: "", email: 'test@mail.com', password: 'test' } },
+    { name: "Email", body: { username: "test", email: '', password: 'test' } },
+    { name: "Password", body: { username: "test", email: 'test@mail.com', password: '' } },
+  ])('Fails if %s is empty', ({ name, body }) => {
+    expect(() => register(body.username, body.email, body.password)).toThrowError(`${name} is required`)
   })
   it("Fails if username is already taken", () => {
     expect(() => register("existingUser", "newMail@mail.com", "newPassword")).toThrowError("Username already taken")
@@ -93,6 +92,7 @@ describe("Registering suite", () => {
   it("Fails if email already exists", () => {
     expect(() => register("newUser", "existing@mail.com", "newPassword")).toThrowError("An account with this email already exists")
   })
+
   it('registers user', () => {
     const user = register('test', 'test@mail.com', 'test')
     otherId = user.id
@@ -107,6 +107,8 @@ describe("Registering suite", () => {
     }))
     expect(user).toBeDefined()
   })
+
+
   afterAll(() => {
     deleteUser(id)
     deleteUser(otherId)
@@ -127,6 +129,9 @@ describe("Log in suite", () => {
   })
   it("Fails is user does not exist", () => {
     expect(() => logIn("test", "test")).toThrowError("User does not exist")
+  })
+  it("Fails if password is incorrect", () => {
+    expect(() => logIn("existingUser", "test")).toThrowError("Password is incorrect")
   })
   it("Logs the right user in", () => {
     const user = logIn("existingUser", "existingPassword")

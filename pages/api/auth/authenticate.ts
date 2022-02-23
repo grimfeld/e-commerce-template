@@ -1,17 +1,19 @@
-import { getUsers } from '@providers/User'
-import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
+import { logIn } from '@providers/User'
+import { NextApiRequest, NextApiResponse } from 'next'
 
-export default function handler (req: NextApiRequest, res: NextApiResponse<{ token: string } | { error: string }>) {
+export default function handleAuthentication (req: NextApiRequest, res: NextApiResponse<{ token: string } | { error: string }>) {
+  try {
+    const { body: { username, password }, method } = req
 
-  const { body: { email, password } } = req
+    if (method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+    const user = logIn(username, password)
 
-  if (!email || !password) return res.status(400).json({ error: 'Email and password are required' })
-  const users = getUsers()
-  const user = users.find(u => u.email === email && u.password === password)
-  if (!user) return res.status(400).json({ error: 'Email or password is incorrect' })
+    if (process.env.JWT_SECRET === undefined) return res.status(500).json({ error: 'JWT_SECRET is not defined' })
+    const token = jwt.sign({ id: user.id, admin: user.admin }, process.env.JWT_SECRET)
+    return res.status(200).json({ token })
 
-  if (process.env.JWT_SECRET === undefined) return res.status(500).json({ error: 'JWT_SECRET is not defined' })
-  const token = jwt.sign({ id: user.id, admin: user.admin }, process.env.JWT_SECRET)
-  return res.status(200).json({ token })
+  } catch (error) {
+    if (error instanceof Error) return res.status(500).json({ error: error.message })
+  }
 }
