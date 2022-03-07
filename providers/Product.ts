@@ -51,7 +51,7 @@ if (process.env.NODE_ENV === 'test') {
 
 
 export const getProducts = (): Product[] => { // Return all products
-  return products
+  return products ?? "There is no products"
 }
 
 export const getProduct = (id: number): Product => { // Return a single product by id if it exists or throw errors

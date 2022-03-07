@@ -1,5 +1,4 @@
 import { getProducts } from '@providers/Product'
-import { getCurrentUser } from '@providers/User'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -31,12 +30,12 @@ export default function Admin ({ products }: { products: Product[] }) {
 
   const router = useRouter()
 
-  useEffect(() => {
-    const currentUser = getCurrentUser()
-    console.log(currentUser)
-    if (currentUser === undefined) router.push('/login')
-    if (!currentUser?.admin) router.push('/error/not-authorized')
-  }, [router])
+  // useEffect(() => {
+  //   const currentUser = getCurrentUser()
+  //   console.log(currentUser)
+  //   if (currentUser === undefined) router.push('/login')
+  //   if (!currentUser?.admin) router.push('/error/not-authorized')
+  // }, [router])
 
   return (
     <div>
