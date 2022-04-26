@@ -1,5 +1,6 @@
-import { getProducts, getProduct, addProduct, updateProduct, deleteProduct } from './Product'
-let products = getProducts()
+import ProductProvider from './Product'
+const provider = ProductProvider.getInstance()
+let products = provider.getProducts()
 
 beforeAll(() => {
   products.push({
@@ -15,7 +16,7 @@ beforeAll(() => {
 
 describe("Getters test suite", () => {
   it("Returns the products list", () => {
-    expect(getProducts()).toEqual([{
+    expect(provider.getProducts()).toEqual([{
       id: 1,
       title: "test-product",
       description: "test-description",
@@ -27,11 +28,11 @@ describe("Getters test suite", () => {
   })
 
   it("Fails to return a non existent product", () => {
-    expect(() => getProduct(2)).toThrowError("Product not found")
+    expect(() => provider.getProduct(2)).toThrowError("Product not found")
   })
 
   it("Returns a specific product", () => {
-    expect(getProduct(1)).toEqual({
+    expect(provider.getProduct(1)).toEqual({
       id: 1,
       title: "test-product",
       description: "test-description",
@@ -45,7 +46,7 @@ describe("Getters test suite", () => {
 
 describe('Adding products suite', () => {
   it('Fails if user is not admin', () => {
-    expect(() => addProduct({
+    expect(() => provider.addProduct({
       title: "test-product",
       description: "test-description",
       price: 39.99,
@@ -65,13 +66,13 @@ describe('Adding products suite', () => {
     { title: "test-product", description: "test-description", price: 39.99, thumbnail: "test-thumbnail", medias: undefined, feedbacks: ["test-feedback"] },
     { title: "test-product", description: "test-description", price: 39.99, thumbnail: "test-thumbnail", medias: ["test-media"], feedbacks: undefined }
   ])('Fails if data is wrong', (product) => {
-    expect(() => addProduct(product, {
+    expect(() => provider.addProduct(product, {
       id: 1,
       admin: true
     })).toThrowError()
   })
   it('Adds a new product to the database and returns it', () => {
-    expect(addProduct({
+    expect(provider.addProduct({
       title: "test-product",
       description: "test-description",
       price: 39.99,
@@ -99,19 +100,19 @@ describe("Updating products suite", () => {
 
 describe("Deleting products suite", () => {
   it("Fails if user is not admin", () => {
-    expect(() => deleteProduct(1, {
+    expect(() => provider.deleteProduct(1, {
       id: 1,
       admin: false
     })).toThrowError('You are not authorized to do this')
   })
   it('Fails if product is not found', () => {
-    expect(() => deleteProduct(9999, {
+    expect(() => provider.deleteProduct(9999, {
       id: 1,
       admin: true
     })).toThrowError('Product not found')
   })
   it('Deletes a product from the database', () => {
-    expect(deleteProduct(1, {
+    expect(provider.deleteProduct(1, {
       id: 1,
       admin: true
     })).toEqual("Product deleted")

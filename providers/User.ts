@@ -117,3 +117,80 @@ export const logIn = (username: string, password: string): User => {
 export const deleteUser = (id: number): void => {
   users = users.filter(user => user.id !== id)
 }
+
+
+export default class UserProvider {
+  private static instance: UserProvider
+
+  private users: User[]
+
+  private constructor () {
+    if (process.env.NODE_ENV == 'test') {
+      this.users = []
+    } else if (process.env.NODE_ENV == 'development') {
+      this.users = [
+        {
+          id: 1,
+          username: 'admin',
+          email: 'admin@grimfeld.tech',
+          password: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          admin: true
+        },
+        {
+          id: 2,
+          username: 'user',
+          email: 'user@grimfeld.tech',
+          password: 'user',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          admin: false
+        }
+      ]
+    } else {
+      this.users = [{
+        id: 1,
+        username: 'admin',
+        email: 'admin@grimfeld.tech',
+        password: 'admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        admin: true
+      },
+      {
+        id: 2,
+        username: 'user',
+        email: 'user@grimfeld.tech',
+        password: 'user',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        admin: false
+      }]
+    }
+  }
+
+  public static getInstance () {
+    if (!UserProvider.instance) {
+      UserProvider.instance = new UserProvider()
+    }
+    return UserProvider.instance
+  }
+
+  public getUsers = (req: { user: Pick<User, 'id' | 'admin'> }): User[] => {
+    if (!req.user.admin) throw new Error("Unauthorized")
+    return this.users
+  }
+
+  public getUser = (id: number, userReq: { id: number, admin: boolean }): User | string => {
+    const user = this.users.find(user => user.id === id)
+    if (user === undefined) throw new Error('User not found')
+    if (userReq.admin || userReq.id === id) {
+      return user
+    } else {
+      return user.username
+    }
+  }
+
+
+}
