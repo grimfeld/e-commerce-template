@@ -1,4 +1,3 @@
-import { Product } from 'types/Product'
 import Database from './Database'
 
 const db = Database.getInstance()
@@ -69,6 +68,14 @@ describe("Database test suite", () => {
     }])
   })
 
+  it("Selects specific fields from a table", () => {
+    expect(db.selectFieldsFromTable<TestData>("test-table", ["content"])).toEqual([{
+      content: 'test',
+    }, {
+      content: "test2"
+    }])
+  })
+
   it("Gets data from a table by field", () => {
     expect(db.getFromTableByField<TestData>("test-table", "id", 1)).toEqual({
       id: 1,
@@ -76,9 +83,21 @@ describe("Database test suite", () => {
     })
   })
 
+  it("Selects specific fields from a table by field", () => {
+    expect(db.selectFieldsFromTableByField<TestData>("test-table", "id", 1, ["content"])).toEqual([{
+      content: 'test',
+    }])
+  })
+
   it("Queries data from a table", () => {
     expect(db.queryFromTable<TestData>("test-table", "1")).toEqual([{
       id: 1,
+      content: 'test',
+    }])
+  })
+
+  it("Selects specific fields from a table by query", () => {
+    expect(db.selectFieldsFromQueryFromTable<TestData>("test-table", "1", ["content"])).toEqual([{
       content: 'test',
     }])
   })

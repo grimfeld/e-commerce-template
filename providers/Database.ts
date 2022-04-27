@@ -22,7 +22,7 @@ export default class Database {
     if (this.data[table] === undefined) this.data[table] = []
   }
 
-  public getTable (table: string): any { // Returns the content of a table
+  public getTable<T> (table: string): T[] { // Returns the content of a table
     return this.data[table]
   }
 
@@ -42,12 +42,39 @@ export default class Database {
 
   public queryFromTable<T> (table: string, query: string): T[] {
     return this.data[table].filter((item: any) => {
-      const data = Object.values(item).reduce((prev, current) => {
-        return prev + JSON.stringify(current)
-      }, "")
-      if (typeof data === "string" && data.toLowerCase().includes(query.toLowerCase())) {
-        return item
+      if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) return item
+    })
+  }
+
+  public selectFieldsFromTable<T> (table: string, fields: Array<keyof T>): T[] {
+    return this.data[table].map(item => {
+      const result: any = {}
+      for (const field of fields) {
+        result[field] = item[field]
       }
+      return result
+    })
+  }
+
+  public selectFieldsFromTableByField<T> (table: string, field: string, value: any, fields: Array<keyof T>): T[] {
+    return this.data[table].filter(item => item[field] === value).map(item => {
+      const result: any = {}
+      for (const field of fields) {
+        result[field] = item[field]
+      }
+      return result
+    })
+  }
+
+  public selectFieldsFromQueryFromTable<T> (table: string, query: string, fields: Array<keyof T>): T[] {
+    return this.data[table].filter((item: any) => {
+      if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) return item
+    }).map(item => {
+      const result: any = {}
+      for (const field of fields) {
+        result[field] = item[field]
+      }
+      return result
     })
   }
 
@@ -68,8 +95,6 @@ export default class Database {
 
 function init () {
   const db = Database.getInstance()
-
-
   if (process.env.NODE_ENV === 'test') {
     // No need to init the DB in test mode
   } else if (process.env.NODE_ENV === 'development') {
