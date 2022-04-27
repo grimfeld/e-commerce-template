@@ -1,64 +1,59 @@
 import { HttpError } from '@root/utils/HttpError'
 import { Product } from "types/Product"
+import Database from './Database'
 
 export default class ProductProvider {
-  private static instance: ProductProvider
 
-  private products: Product[]
+  private db: Database
 
   private constructor () {
-    if (process.env.NODE_ENV === 'test') {
-      this.products = []
-    } else if (process.env.NODE_ENV === 'development') {
-      this.products = [
-        {
-          id: 1,
-          title: 'Product 1',
-          description: 'Description of product 1',
-          thumbnail: 'https://images.unsplash.com/photo-1620780327051-f7ad06f5b1e0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80',
-          medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
-          feedbacks: ['Test feedback'],
-          price: 49.99
-        },
-        {
-          id: 2,
-          title: 'Product 2',
-          description: 'Description of product 2',
-          thumbnail: 'https://picsum.photos/400',
-          medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
-          feedbacks: ['Test feedback'],
-          price: 49.99
-        },
-      ]
-    } else {
-      this.products = [
-        {
-          id: 1,
-          title: 'Product 1',
-          description: 'Description of product 1',
-          thumbnail: 'https://images.unsplash.com/photo-1620780327051-f7ad06f5b1e0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80',
-          medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
-          feedbacks: ['Test feedback'],
-          price: 49.99
-        },
-        {
-          id: 2,
-          title: 'Product 2',
-          description: 'Description of product 2',
-          thumbnail: 'https://picsum.photos/400',
-          medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
-          feedbacks: ['Test feedback'],
-          price: 49.99
-        },
-      ]
-    }
-  }
-
-  public static getInstance (): ProductProvider {
-    if (!ProductProvider.instance) {
-      ProductProvider.instance = new ProductProvider()
-    }
-    return ProductProvider.instance
+    this.db = Database.getInstance()
+    // this.db.createTable("products")
+    // if (process.env.NODE_ENV === 'test') {
+    //   this.db.insertIntoTable("products", [])
+    // } else if (process.env.NODE_ENV === 'development') {
+    //   this.db.insertIntoTable("products", [
+    //     {
+    //       id: 1,
+    //       title: 'Product 1',
+    //       description: 'Description of product 1',
+    //       thumbnail: 'https://images.unsplash.com/photo-1620780327051-f7ad06f5b1e0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80',
+    //       medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
+    //       feedbacks: ['Test feedback'],
+    //       price: 49.99
+    //     },
+    //     {
+    //       id: 2,
+    //       title: 'Product 2',
+    //       description: 'Description of product 2',
+    //       thumbnail: 'https://picsum.photos/400',
+    //       medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
+    //       feedbacks: ['Test feedback'],
+    //       price: 49.99
+    //     },
+    //   ])
+    // } else {
+    //   this.db.insertIntoTable("products", [
+    //     {
+    //       id: 1,
+    //       title: 'Product 1',
+    //       description: 'Description of product 1',
+    //       thumbnail: 'https://images.unsplash.com/photo-1620780327051-f7ad06f5b1e0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80',
+    //       medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
+    //       feedbacks: ['Test feedback'],
+    //       price: 49.99
+    //     },
+    //     {
+    //       id: 2,
+    //       title: 'Product 2',
+    //       description: 'Description of product 2',
+    //       thumbnail: 'https://picsum.photos/400',
+    //       medias: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
+    //       feedbacks: ['Test feedback'],
+    //       price: 49.99
+    //     },
+    //   ])
+    // }
   }
 
   public validateProduct (product: Omit<Product, 'id'>): boolean {
@@ -77,7 +72,7 @@ export default class ProductProvider {
   }
 
   public getProducts (): Product[] {
-    return this.products
+    return this.db.getTable("products")
   }
 
   public getProduct (id: number): Product {
@@ -94,7 +89,7 @@ export default class ProductProvider {
     if (product === undefined) throw new Error('Product not found')
     const result: any = {}
     for (const field of fields) {
-      result[field] = product[field]
+      // result[field] = product[field]
     }
   }
 
