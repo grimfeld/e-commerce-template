@@ -30,6 +30,10 @@ export default class Database {
     delete this.data[table]
   }
 
+  public getNextId (table: string): number {
+    return this.data[table].length + 1
+  }
+
   // ROWS CRUD
 
   public insertIntoTable<T> (table: string, data: T[]): void {

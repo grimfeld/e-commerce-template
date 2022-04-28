@@ -7,7 +7,7 @@ export default class ProductProvider {
   private db: Database
   private table: string = "products"
 
-  private constructor () {
+  constructor () {
     this.db = Database.getInstance()
   }
 
@@ -60,8 +60,8 @@ export default class ProductProvider {
   public addProduct (product: Omit<Product, "id">): Product { // Add a product
     if (!this.validateProduct(product)) throw new Error('Product is not valid')
 
-    this.db.insertIntoTable(this.table, [{
-      id: this.db.getTable(this.table).length + 1,
+    this.db.insertIntoTable<Product>(this.table, [{
+      id: this.db.getTable<Product>(this.table).length + 1,
       title: product.title,
       description: product.description,
       thumbnail: product.thumbnail,

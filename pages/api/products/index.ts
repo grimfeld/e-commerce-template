@@ -1,9 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { addProduct, getProducts } from '@providers/Product'
+import ProductProvider from '@providers/Product'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Product } from 'types/Product'
 import jwt from "jsonwebtoken"
 import { HttpError } from '@root/utils/HttpError'
+
+const productProvider = new ProductProvider()
 
 export default function handleProducts (req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -12,7 +14,7 @@ export default function handleProducts (req: NextApiRequest, res: NextApiRespons
       method,
       headers
     } = req
-    const products = getProducts()
+    const products = productProvider.getProducts()
 
     const token = headers.authorization?.split(' ')[1]
 
@@ -23,7 +25,7 @@ export default function handleProducts (req: NextApiRequest, res: NextApiRespons
         if (process.env.JWT_SECRET === undefined) throw new HttpError(500, 'JWT_SECRET is not defined')
         if (token === undefined) throw new HttpError(401, 'Unauthenticated')
         const user = jwt.verify(token, process.env.JWT_SECRET)
-        const newProduct = addProduct(body as Product, user as { id: number, admin: boolean })
+        const newProduct = productProvider.addProduct(body as Product)
         return res.status(201).json(newProduct)
       default:
         throw new HttpError(405, 'Method not allowed')

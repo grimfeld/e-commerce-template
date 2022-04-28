@@ -14,6 +14,17 @@ describe("Register API endpoint test suite", () => {
     expect(res._getJSONData()).toEqual({ error: 'Method not allowed' })
   })
 
+  // it("fails if body is not provided", () => {
+  //   const { req, res } = httpMocks.createMocks({
+  //     method: 'POST',
+  //     body: {} as Body,
+  //   })
+
+  //   handleRegistration(req, res)
+  //   expect(res._getStatusCode()).toBe(400)
+  //   expect(res._getJSONData()).toEqual({ error: 'No body' })
+  // })
+
   it.each([
     { name: "Username", body: { email: 'test@mail.com', password: 'test' } },
     { name: "Email", body: { username: "test", password: 'test' } },
@@ -24,7 +35,7 @@ describe("Register API endpoint test suite", () => {
       body
     })
     handleRegistration(req, res)
-    expect(res._getStatusCode()).toBe(500)
+    expect(res._getStatusCode()).toBe(400)
     expect(res._getJSONData()).toEqual({ error: `${name} is required` })
   })
 
